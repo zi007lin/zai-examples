@@ -2,26 +2,40 @@
 
 Sample specs for [ZAI](https://zai.htu.io/app), the spec validator used in the [ZiLin Methodology](https://htu.io) at HTU.
 
-This repo demonstrates how the ZAI rubric distinguishes complete specs from incomplete ones. The pair below is a real FEAT spec at two stages: one with a missing rubric item, one with it corrected.
+This repo demonstrates how the ZAI rubric distinguishes complete specs from incomplete ones. The pair below is a real FEAT spec at two stages — one with a missing rubric item, one with it corrected — published twice, with two different filename conventions, to show both upload paths.
 
-## The pair
+## The pairs
+
+### Canonical-name pair (recommended for new authors)
+
+The canonical ZiLin filename pattern is `YYYY-MM-DD__<type>__<title>(-vN)?.md`. ZAI reads the type from the filename directly — no inference needed.
 
 | File | Score | What it shows |
 |---|---|---|
-| [`example-feat-broken.md`](./example-feat-broken.md) | **9 / 10 PARTIAL** | A FEAT spec missing the `### Who benefits` subsection under Game Theory |
-| [`example-feat-fixed.md`](./example-feat-fixed.md) | **10 / 10 PASS** | The same spec with the missing subsection restored |
+| [`2026-05-14__feat__pre-trade-compliance-broken-v1.md`](./2026-05-14__feat__pre-trade-compliance-broken-v1.md) | **9 / 10 PARTIAL** | A FEAT spec missing the `### Who benefits` subsection under Game Theory |
+| [`2026-05-14__feat__pre-trade-compliance-fixed-v1.md`](./2026-05-14__feat__pre-trade-compliance-fixed-v1.md) | **10 / 10 PASS** | The same spec with the missing subsection restored |
 
-Both specs describe the same feature: **a pre-trade compliance check API for derivative trades** — Python FastAPI service deployed to AWS via Terraform, with LLM-assisted review of ambiguous cases and a cryptographic audit hash chain.
+### Non-canonical-name pair (H1-fallback path)
 
-The diff between the two files is roughly 80 words inside one section. The rubric catches the absence.
+The same content under non-canonical filenames. ZAI's detector falls back to the document's `# FEAT:` H1 to infer the type. Useful for legacy exports, brainstorm drafts, and any document whose filename predates the canonical naming convention. This path was added in [`zi007lin/zai` PR #90](https://github.com/zi007lin/zai/pull/90); without it, these files would have hard-thrown on upload.
+
+| File | Score | What it shows |
+|---|---|---|
+| [`example-feat-broken.md`](./example-feat-broken.md) | **9 / 10 PARTIAL** | Same spec, non-canonical filename, type inferred from H1 |
+| [`example-feat-fixed.md`](./example-feat-fixed.md) | **10 / 10 PASS** | Same spec, non-canonical filename, type inferred from H1 |
+
+Both pairs describe the same feature: **a pre-trade compliance check API for derivative trades** — Python FastAPI service deployed to AWS via Terraform, with LLM-assisted review of ambiguous cases and a cryptographic audit hash chain.
+
+The diff between broken and fixed is roughly 80 words inside one section. The rubric catches the absence regardless of which pair you upload.
 
 ## Try it yourself
 
 1. Open [zai.htu.io/app](https://zai.htu.io/app)
-2. Drop `example-feat-broken.md` into the scorer
-3. See the score: **9/10 PARTIAL**, failure: `game_theory: missing required subsections: "Who benefits"`
-4. Drop `example-feat-fixed.md` into the same scorer
+2. Drop `2026-05-14__feat__pre-trade-compliance-broken-v1.md` into the scorer
+3. See the score: **9/10 PARTIAL**, failure: `game_theory: missing required subsections: "Who benefits"`. The score panel's type badge reads `FEAT` with no provenance chip — the type came straight from the filename.
+4. Drop `2026-05-14__feat__pre-trade-compliance-fixed-v1.md` into the same scorer
 5. See the score: **10/10 PASS**
+6. Repeat with the non-canonical pair (`example-feat-broken.md` / `example-feat-fixed.md`); same scores, but the type badge now carries an `inferred from H1` provenance chip.
 
 Total time: under 60 seconds.
 
@@ -36,9 +50,11 @@ The principle, in one line: *If you can't name the cooperators, you haven't desi
 ## Repository contents
 
 ```
-example-feat-broken.md   # FEAT spec, scores 9/10
-example-feat-fixed.md    # FEAT spec, scores 10/10 (the fix is roughly 80 words)
-README.md                # This file
+2026-05-14__feat__pre-trade-compliance-broken-v1.md   # canonical-name pair, broken, 9/10
+2026-05-14__feat__pre-trade-compliance-fixed-v1.md    # canonical-name pair, fixed,  10/10
+example-feat-broken.md                                 # non-canonical pair, broken, 9/10 via H1 fallback
+example-feat-fixed.md                                  # non-canonical pair, fixed,  10/10 via H1 fallback
+README.md                                              # This file
 ```
 
 ## About ZAI
